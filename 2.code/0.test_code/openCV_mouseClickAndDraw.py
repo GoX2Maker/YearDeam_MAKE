@@ -21,12 +21,12 @@ def draw_rectangle(event,x,y,flags,param):
     elif event == cv2.EVENT_MOUSEMOVE: # 마우스 이동
         if drawing == True:            # 마우스를 누른 상태 일경우
             img[:] = img_history[-1][:] # 마지막 저장된 이미지로 복원
-            cv2.rectangle(img,(ix,iy),(x,y),(0,0,255),2) # 빨간색으로 테두리 그리기
+            cv2.rectangle(img,(ix,iy),(x,y),(0,0,255),1) # 빨간색으로 테두리 그리기
             
             
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False;             # 마우스를 때면 상태 변경
-        cv2.rectangle(img,(ix,iy),(x,y),(0,0,255),2) # 빨간색으로 테두리 그리기
+        cv2.rectangle(img,(ix,iy),(x,y),(0,0,255),1) # 빨간색으로 테두리 그리기
         imgPoint_history.append({ 'id' : len(imgPoint_history) , 'x1' : ix, 'y1' : iy, 'x2' : x, 'y2' : y})
         print(f"start : ({ix},{iy}), end : ({x},{y})")
 
