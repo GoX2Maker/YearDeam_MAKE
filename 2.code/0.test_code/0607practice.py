@@ -66,8 +66,8 @@ def input_pre1(csvPath, imgPath, moveTxt, txtFont = "malgun.ttf", txtSize = 15):
     return text_dict, result_img
 
 
-csvPath = r'1.data\3.DB\prescription1.csv'
-imgPath = r'1.data\1.img\prescription.png'
+csvPath = r'1.data/3.DB/prescription1.csv'
+imgPath = r'1.data/1.img/prescription.png'
 moveTxt = [10, 10]
 # txtFont = "malgun.ttf"
 # txtSize = 15
