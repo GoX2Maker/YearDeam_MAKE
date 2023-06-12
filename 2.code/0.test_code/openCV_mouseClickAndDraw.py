@@ -1,8 +1,8 @@
 import cv2
 import pandas as pd
 
-imgPath = r'1.data\1.img\prescription.png'
-dbPath = r'1.data\0.test\db\test.csv'
+imgPath = r'1.data/1.img/prescription.png'
+dbPath = r'1.data/3.DB/prescription2.csv'
 title = 'test'
 
 drawing = False # 마우스가 클릭된 상태 확인용
@@ -46,7 +46,8 @@ while True:
         imgPoint_history.pop()
         
     elif k == ord('s'): # s를 누르면 이미지 저장
-        cv2.imwrite('saved_image.jpg', img)
+        # cv2.imwrite('saved_image.jpg', img)
+        cv2.imwrite('saved_image2.jpg', img)
 
 cv2.destroyAllWindows()
 df = pd.DataFrame(imgPoint_history)
