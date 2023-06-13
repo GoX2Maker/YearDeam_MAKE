@@ -6,7 +6,7 @@ import os
 import pandas as pd
 
 
-## 입력: csv 파일, 처방전 양식 png, 글자 이동, 글꼴, 글자크기 [V]
+## 입력: csv 파일, 처방전 양식 png, 글자 이동, 글꼴, 글자크기
 ## 처리: 글자가 있는 곳 박스처리
 ## 출력: 글자 위치, 처방전 결과 img
 
@@ -65,9 +65,6 @@ def input_labeling(csvPath, imgPath, moveTxt, txtFont = "malgun.ttf", txtSize = 
         draw.text((position[0] + text_width /2, position[1]  + text_height/2), text, (0, 0, 0), font=font,anchor='mm')
         
         text_sizes_list.append([position[0], position[1], position[0] + text_width, position[1] + text_height])
-        
-        # Draw a rectangle around the text
-        #draw.rectangle([(position[0], position[1]), (position[0]+text_width, position[1]+text_height)], outline=(0, 255, 0))
         
 
     # PIL Image를 다시 numpy 배열로 변환
