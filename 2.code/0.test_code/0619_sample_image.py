@@ -20,7 +20,21 @@ df = pd.concat([df1, df2], ignore_index=True)
 
 df.to_csv(r'1.data\3.DB\db.csv', index=False)
 
-csvPath = r'1.data\3.DB\db.csv'
+#1. 데이터를 읽고 name 컬럼을 만든다. ,df3 name컬럼에 임의의(a~z) 데이터를 넣기
+df3 = pd.read_csv(r'1.data\3.DB\db.csv')
+
+name = []
+str = 'abcdefghijklmnopqrstuvwxyz'
+    
+for i in range(len(df3.index)):
+    name.append(str[i % len(str)])
+    
+#print(name)
+df3["name"] = name
+
+df3.to_csv(r'1.data\3.DB\db_name.csv', index=False)
+
+csvPath = r'1.data\3.DB\db_name.csv'
 imgPath = r'1.data\1.img\prescription.png'
 moveTxt = [0, 0]
 txtFont = "malgun.ttf"

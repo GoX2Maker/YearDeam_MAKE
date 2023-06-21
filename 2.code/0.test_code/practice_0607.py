@@ -51,8 +51,8 @@ def input_pre1(csvPath, imgPath, moveTxt, txtFont = "malgun.ttf", txtSize = 15):
     # csv 파일 로드
     df = pd.read_csv(csvPath)
 
-    # 'id', 'x1', 'y1', 'y2' 컬럼의 값을 이용해서 텍스트와 좌표값을 가진 딕셔너리 생성
-    text_dict = {str(row['id']): (row['x1'] + 7.5 + moveTxt[0], row['y1'] -2.5 + moveTxt[1]) for _, row in df.iterrows()}
+    # 'name', 'x1', 'y1', 'y2' 컬럼의 값을 이용해서 텍스트와 좌표값을 가진 딕셔너리 생성
+    text_dict = {str(row['name']): (row['x1'] + 7.5 + moveTxt[0], row['y1'] -2.5 + moveTxt[1]) for _, row in df.iterrows()}
 
     # 텍스트를 추가하는 for loop
     for text, position in text_dict.items():
