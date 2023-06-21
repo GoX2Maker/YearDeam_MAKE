@@ -6,6 +6,9 @@
 0609seon.py
 파일을 참고
 '''
+
+
+
 import cv2
 import pandas as pd
 from practice_0607 import input_pre1
@@ -40,8 +43,8 @@ moveTxt = [0, 0]
 txtFont = "malgun.ttf"
 txtSize = 15
 
-text_dict, result_img = input_pre1(csvPath, imgPath, moveTxt)
-print(text_dict)
+text_list, result_img = input_pre1(csvPath, imgPath, moveTxt)
+print(text_list)
 cv2.imshow('result', result_img)
 cv2.waitKey()
 cv2.destroyAllWindows()
