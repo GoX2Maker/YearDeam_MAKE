@@ -52,10 +52,19 @@ def input_pre1(csvPath, imgPath, moveTxt, txtFont = "malgun.ttf", txtSize = 15):
     df = pd.read_csv(csvPath)
 
     # 'id', 'x1', 'y1', 'y2' 컬럼의 값을 이용해서 텍스트와 좌표값을 가진 딕셔너리 생성
-    text_dict = {str(row['id']): (row['x1'] + 7.5 + moveTxt[0], row['y1'] -2.5 + moveTxt[1]) for _, row in df.iterrows()}
+    #text_dict = {str(row['id']): (row['x1'] + 7.5 + moveTxt[0], row['y1'] -2.5 + moveTxt[1]) for _, row in df.iterrows()}
+
+
+    text_list = []
+    for _, row in df.iterrows():
+        text_list.append([row['name'], (row['x1'] + 7.5 + moveTxt[0], row['y1'] -2.5 + moveTxt[1])])
+    
+
+
+
 
     # 텍스트를 추가하는 for loop
-    for text, position in text_dict.items():
+    for text, position in text_list:
         # .text(위치, 텍스트, 텍스트 색, 폰트)
         draw.text(position, text, (0, 0, 0), font=font)
 
@@ -63,7 +72,7 @@ def input_pre1(csvPath, imgPath, moveTxt, txtFont = "malgun.ttf", txtSize = 15):
     img_with_text = np.array(img)
     result_img = cv2.cvtColor(img_with_text, cv2.COLOR_RGB2BGR)
 
-    return text_dict, result_img
+    return text_list, result_img
 
 
 # csvPath = r'1.data\3.DB\prescription1.csv'
