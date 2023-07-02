@@ -73,9 +73,9 @@ def medicine(cnt, dataPath, positionPath):
         id = 30 + i
         position = []
         for j in range(4):
-            id += j * 13
-            mask = position_df['id'] == id
-            position.append(position_df[mask][['x1', 'y1']].values)
+            id_ = id + j * 13
+            mask = position_df['id'] == id_
+            position.append(position_df[mask][['x1', 'y1']].values[0])
         
 
         medi_list.append([medi_name, position[0]])
@@ -115,9 +115,9 @@ def injection(cnt, dataPath, positionPath):
         id = 85 + i
         position = []
         for j in range(4):
-            id += j * 7
-            mask = position_df['id'] == id
-            position.append(position_df[mask][['x1', 'y1']].values)
+            id_ = id + j * 7
+            mask = position_df['id'] == id_
+            position.append(position_df[mask][['x1', 'y1']].values[0])
         
 
         injection_list.append([injection_name, position[0]])
@@ -138,21 +138,21 @@ def checkSquared(positionPath):
     if id == 28:
         # 체크를 하고 29에 글자 삽입
         mask = position_df['id'] == id
-        checkSquared_list.append(["■", position_df[mask][['x1', 'y1']].values])
+        checkSquared_list.append(["■", position_df[mask][['x1', 'y1']].values[0]])
         
         # 글자 삽입
         mask = position_df['id'] == 29
         #일단, A
-        checkSquared_list.append(["A", position_df[mask][['x1', 'y1']].values])
+        checkSquared_list.append(["A", position_df[mask][['x1', 'y1']].values[0]])
 
     else:
         # 체크  
         mask = position_df['id'] == id
-        checkSquared_list.append(["■", position_df[mask][['x1', 'y1']].values])
+        checkSquared_list.append(["■", position_df[mask][['x1', 'y1']].values[0]])
         
     id = random.randint(83,84)
     mask = position_df['id'] == id
-    checkSquared_list.append(["■", position_df[mask][['x1', 'y1']].values])
+    checkSquared_list.append(["■", position_df[mask][['x1', 'y1']].values[0]])
 
        
     return checkSquared_list
