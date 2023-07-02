@@ -79,9 +79,9 @@ def medicine(cnt, dataPath, positionPath):
         
 
         medi_list.append([medi_name, position[0]])
-        amount_list.append([amount, position[1]])
-        count_list.append([count, position[2]])
-        duration_list.append([duration, position[3]])
+        amount_list.append([str(amount), position[1]])
+        count_list.append([str(count), position[2]])
+        duration_list.append([str(duration), position[3]])
        
     return medi_list + amount_list + count_list + duration_list
 
@@ -121,9 +121,9 @@ def injection(cnt, dataPath, positionPath):
         
 
         injection_list.append([injection_name, position[0]])
-        amount_list.append([amount, position[1]])
-        count_list.append([count, position[2]])
-        duration_list.append([duration, position[3]])
+        amount_list.append([str(amount), position[1]])
+        count_list.append([str(count), position[2]])
+        duration_list.append([str(duration), position[3]])
        
     return injection_list + amount_list + count_list + duration_list
 
