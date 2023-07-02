@@ -200,7 +200,7 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
         # .text(위치, 텍스트, 텍스트 색, 폰트)
         text_width, text_height = draw.textsize(text, font=font)
 
-        position[0] += moveTxt[0]
+        position[0] += moveTxt[0] + 10
         position[1] += moveTxt[1]
 
         x = position[0]  + text_width / 2
@@ -217,8 +217,8 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
     result_img = cv2.cvtColor(img_with_text, cv2.COLOR_RGB2BGR)
     
     #사각형 그리기
-    for x1, y1, x2, y2 in text_sizes_list:
-        cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    # for x1, y1, x2, y2 in text_sizes_list:
+    #     cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
 
     cv2.imshow('result', result_img)
