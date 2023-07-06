@@ -5,7 +5,7 @@ from PIL import ImageFont, ImageDraw, Image
 import numpy as np
 
 
-def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 15):
+def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 10):
     """
     Yolo와 ResNet data set을 만든다.
 
@@ -31,20 +31,19 @@ def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "mal
 
     # 처방전 데이터 생성
     data_list = []
-    cnt = random.randint(1, 13)
-    data_list += medicine(cnt, medicinePath, dbPath)
+    medicineCNT = random.randint(1, 13)
+    data_list += medicine(medicineCNT, medicinePath, dbPath)
 
-    cnt = random.randint(1, 13)
-    data_list += injection(cnt, medicinePath, dbPath)
+    injectionCNT = random.randint(1, 7)
+    data_list += injection(injectionCNT, medicinePath, dbPath)
+    
+    instructionCNT = random.randint(1, 7)
+    data_list += instruction(instructionCNT, medicinePath, dbPath)
 
     data_list += checkSquared(dbPath)
 
     # 처방전 이미지 및 Json 생성
     img, img_json  = createImg(data_list, imgPath, moveTxt, txtFont, txtSize)
-
-
-
-
 
 
 # 의약품 메서드
@@ -64,7 +63,9 @@ def medicine(cnt, dataPath, positionPath):
 
     for i in range(cnt):
         index = random.randint(0, 40000)
-        medi_name = medicine_df.iloc[index, 2]
+        
+        namesize = random.randint(20, 25)
+        medi_name = medicine_df.iloc[index, 2][:namesize]
 
         amount = random.randint(1, 10) # 1회 투약량
         count = random.randint(1, 10) # 1회 투약횟수
@@ -86,8 +87,6 @@ def medicine(cnt, dataPath, positionPath):
     return medi_list + amount_list + count_list + duration_list
 
 
-
-
 # 주사 메서드
 def injection(cnt, dataPath, positionPath):
     # cnt : 1~7
@@ -106,7 +105,9 @@ def injection(cnt, dataPath, positionPath):
 
     for i in range(cnt):
         index = random.randint(0, 40000)
-        injection_name = medicine_df.iloc[index, 2]
+        namesize = random.randint(20, 25)
+        injection_name = medicine_df.iloc[index, 2][:namesize]
+
 
         amount = random.randint(1, 10) # 1회 투약량
         count = random.randint(1, 10) # 1회 투약횟수
@@ -127,6 +128,40 @@ def injection(cnt, dataPath, positionPath):
        
     return injection_list + amount_list + count_list + duration_list
 
+
+def instruction(cnt,  dataPath, positionPath):
+    medicine_df = pd.read_csv(dataPath)
+    position_df = pd.read_csv(positionPath)
+    
+
+    instruction_list = []
+
+    
+    # 용법
+    id = 82
+    index = random.randint(0, 40000)
+    namesize = random.randint(4, 20)
+    instruction_ = medicine_df.iloc[index, 2][:namesize]
+    
+    mask = position_df['id'] == id
+    position = position_df[mask][['x1', 'y1']].values[0]
+    instruction_list.append([instruction_, position])
+    
+    # 참고사항
+    id = 113
+    index = random.randint(0, 40000)
+    namesize = random.randint(4, 20)
+    note = medicine_df.iloc[index, 2][:namesize]
+    
+    mask = position_df['id'] == id
+    position = position_df[mask][['x1', 'y1']].values[0]
+    instruction_list.append([note, position])
+
+
+   
+    return instruction_list
+    
+    
 # 체크상자 메서드
 def checkSquared(positionPath):
     # positionPath : 위치DB 경로
@@ -217,8 +252,8 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
     result_img = cv2.cvtColor(img_with_text, cv2.COLOR_RGB2BGR)
     
     #사각형 그리기
-    # for x1, y1, x2, y2 in text_sizes_list:
-    #     cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    for x1, y1, x2, y2 in text_sizes_list:
+        cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
 
     cv2.imshow('result', result_img)
