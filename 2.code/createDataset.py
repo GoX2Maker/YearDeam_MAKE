@@ -5,7 +5,7 @@ from PIL import ImageFont, ImageDraw, Image
 import numpy as np
 
 
-def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 10):
+def CreateDataset(dbPath, medicinePath, labelingPath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 10):
     """
     Yolo와 ResNet data set을 만든다.
 
@@ -14,6 +14,8 @@ def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "mal
         `dbPath [string]` : db.csv 경로
 
         `medicinePath [string]` : medicine_list.csv 경로
+
+        `labelingPath [string]` : prescript_labeling.csv 경로
 
         `imgPath [string]` : 처방전 양식 경로
 
@@ -43,7 +45,7 @@ def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "mal
     data_list += checkSquared(dbPath)
 
     # 처방전 이미지 및 Json 생성
-    img, img_json  = createImg(data_list, imgPath, moveTxt, txtFont, txtSize)
+    img, img_json  = createImg(data_list, labelingPath, imgPath, moveTxt, txtFont, txtSize)
 
 
 # 의약품 메서드
@@ -193,13 +195,15 @@ def checkSquared(positionPath):
     return checkSquared_list
 
 
-def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 15):
+def createImg(data, labelingPath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 15):
     """
     처방전 data를 이미지로 제작
 
     Args:
     ---
         `data [string]` : text위치 및 내용
+
+        `labelingPath [string]` : prescript_labeling.csv 경로
 
         `imgPath [string]` : 처방전 양식 경로
 
@@ -253,9 +257,23 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
     
     #사각형 그리기
     for x1, y1, x2, y2 in text_sizes_list:
-        cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 1)
 
 
+    # 처방전 라벨링 사각형 그리기
+
+    df = pd.read_csv(labelingPath)
+
+    # 'id', 'x1', 'y1', 'y2' 컬럼의 값을 이용해서 텍스트와 좌표값을 가진 딕셔너리 생성
+    position_list = [[row['id'], row['x1'] + moveTxt[0], row['y1'] + moveTxt[1] ,row['x2'] + moveTxt[0] , row['y2'] + moveTxt[1]] for _, row in df.iterrows()]
+
+    
+    #사각형 그리기
+    for id, x1, y1, x2, y2 in position_list:
+        cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 1)
+
+
+    cv2.namedWindow("result", cv2.WINDOW_NORMAL)
     cv2.imshow('result', result_img)
     cv2.waitKey()
     cv2.destroyAllWindows()
@@ -266,7 +284,8 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
 
 dbPath = r'1.data\3.DB\db.csv'
 medicinePath = r'1.data\3.DB\medicine_list.csv'
+labelingPath = r'1.data\3.DB\prescript_labeling.csv'
 imgPath = r'1.data\1.img\prescription.png'
 
 
-CreateDataset(dbPath = dbPath, medicinePath= medicinePath, imgPath = imgPath)
+CreateDataset(dbPath = dbPath, medicinePath= medicinePath, labelingPath = labelingPath, imgPath = imgPath)
