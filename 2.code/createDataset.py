@@ -4,14 +4,21 @@ import random
 from PIL import ImageFont, ImageDraw, Image
 import numpy as np
 import json
+from tqdm.auto import tqdm
 
 
-def CreateDataset(dbPath, medicinePath, labelingPath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 10, debug =False):
+def CreateDataset(nums, saveIMGPaht, saveJsonPath, dbPath, medicinePath, labelingPath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 10, debug =False):
     """
     Yolo와 ResNet data set을 만든다.
 
     Args:
     ---
+        `nums [int]` : 생성할 이미지 갯수
+
+        `saveIMGPaht [string]` : 이미지 저장 경로
+        
+        `saveJsonPath [string]` : Json 저장 경로
+
         `dbPath [string]` : db.csv 경로
 
         `medicinePath [string]` : medicine_list.csv 경로
@@ -34,29 +41,35 @@ def CreateDataset(dbPath, medicinePath, labelingPath, imgPath, moveTxt = [0,0], 
 
     """
 
-    # 처방전 데이터 생성
-    data_list = []
-    medicineCNT = random.randint(1, 13)
-    data_list += medicine(medicineCNT, medicinePath, dbPath)
+    for i in tqdm(range(nums)):
+        # 처방전 데이터 생성
+        data_list = []
+        medicineCNT = random.randint(1, 13)
+        data_list += medicine(medicineCNT, medicinePath, dbPath)
 
-    injectionCNT = random.randint(1, 7)
-    data_list += injection(injectionCNT, medicinePath, dbPath)
-    
-    instructionCNT = random.randint(1, 7)
-    data_list += instruction(instructionCNT, medicinePath, dbPath)
-
-    data_list += checkSquared(dbPath)
-
-    # 처방전 이미지 및 Json 생성
-    result_img, result_json  = createImg(data_list, labelingPath, imgPath, moveTxt, txtFont, txtSize, debug)
-
-    if debug:
-        print(result_json)
-        cv2.namedWindow("result", cv2.WINDOW_NORMAL)
-        cv2.imshow('result', result_img)
-        cv2.waitKey()
-        cv2.destroyAllWindows()
+        injectionCNT = random.randint(1, 7)
+        data_list += injection(injectionCNT, medicinePath, dbPath)
         
+        instructionCNT = random.randint(1, 7)
+        data_list += instruction(instructionCNT, medicinePath, dbPath)
+
+        data_list += checkSquared(dbPath)
+
+        # 처방전 이미지 및 Json 생성
+        result_img, result_json  = createImg(data_list, labelingPath, imgPath, moveTxt, txtFont, txtSize, debug)
+
+        if debug:
+            cv2.namedWindow("result", cv2.WINDOW_NORMAL)
+            cv2.imshow('result', result_img)
+            cv2.waitKey()
+            cv2.destroyAllWindows()
+        
+        with open(saveJsonPath + rf'\{i}.json', 'w', encoding='utf-8') as file:
+            file.write(result_json)
+            if debug:
+                print(result_json)
+        
+        cv2.imwrite(saveIMGPaht + rf'\{i}.jpg', result_img)
 
 
 
@@ -251,7 +264,9 @@ def createImg(data, labelingPath, imgPath, moveTxt = [0,0], txtFont = "malgun.tt
     # 텍스트를 추가하는 for loop    
     for text, position in data:
         # .text(위치, 텍스트, 텍스트 색, 폰트)
-        text_width, text_height = draw.textsize(text, font=font)
+        text_width, text_height = draw.textbbox((0, 0), text, font=font)[2:4]
+
+        
 
         position[0] += moveTxt[0] + 10
         position[1] += moveTxt[1]
@@ -303,11 +318,13 @@ def createImg(data, labelingPath, imgPath, moveTxt = [0,0], txtFont = "malgun.tt
 
 
 
-
+nums = 10
+saveIMGPaht = r'1.data\4.dataSet\img'
+saveJsonPath = r'1.data\4.dataSet\json'
 dbPath = r'1.data\3.DB\db.csv'
 medicinePath = r'1.data\3.DB\medicine_list.csv'
 labelingPath = r'1.data\3.DB\prescript_labeling(Fix).json'
 imgPath = r'1.data\1.img\prescription.png'
-debug = True
+debug = False
 
-CreateDataset(dbPath = dbPath, medicinePath= medicinePath, labelingPath = labelingPath, imgPath = imgPath, debug = debug)
+CreateDataset(nums=nums, saveIMGPaht = saveIMGPaht, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath= medicinePath, labelingPath = labelingPath, imgPath = imgPath, debug = debug)
