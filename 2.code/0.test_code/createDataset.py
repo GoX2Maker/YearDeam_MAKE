@@ -559,6 +559,6 @@ dbPath = r'1.data\3.DB\db.csv'
 medicinePath = r'1.data\3.DB\medicine_list.csv'
 labelingPath = r'1.data\3.DB\prescript_labeling(Fix).json'
 imgPath = r'1.data\1.img\prescription.png'
-debug = False
+
 
 CreateDataset(nums=nums, saveIMGPaht = saveIMGPaht, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath= medicinePath, labelingPath = labelingPath, imgPath = imgPath, debug = debug)
