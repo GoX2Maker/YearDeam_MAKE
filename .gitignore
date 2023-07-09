@@ -224,4 +224,7 @@ tags
 .history
 .ionide
 
+#ignore data Path
+1.data/4.dataSet
+
 # End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,visualstudiocode,vim
