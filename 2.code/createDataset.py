@@ -391,8 +391,8 @@ imgPath = r'1.data\1.img\prescription.png'
 
 dataset =  DataSet(saveIMGPaht= saveIMGPaht, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
 
-nums = 10
-debug = True
+nums = 20
+debug = False#True
 dataset.CreateDataset(nums=nums, debug=debug)
 
 
