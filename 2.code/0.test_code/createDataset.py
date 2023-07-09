@@ -3,17 +3,27 @@ import pandas as pd
 import random
 from PIL import ImageFont, ImageDraw, Image
 import numpy as np
+import json
+from tqdm.auto import tqdm
 
 
-def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 10):
+def CreateDataset(nums, saveIMGPaht, saveJsonPath, dbPath, medicinePath, labelingPath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 10, debug =False):
     """
     Yolo와 ResNet data set을 만든다.
 
     Args:
     ---
+        `nums [int]` : 생성할 이미지 갯수
+
+        `saveIMGPaht [string]` : 이미지 저장 경로
+        
+        `saveJsonPath [string]` : Json 저장 경로
+
         `dbPath [string]` : db.csv 경로
 
         `medicinePath [string]` : medicine_list.csv 경로
+
+        `labelingPath [string]` : prescript_labeling.csv 경로
 
         `imgPath [string]` : 처방전 양식 경로
 
@@ -23,27 +33,44 @@ def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "mal
 
         `txtSize [int]` : 글자 크기
 
+        `debug [bool]` : 디버그용(라인 표시)
+
     Returns:
     ---
        None
 
     """
 
-    # 처방전 데이터 생성
-    data_list = []
-    medicineCNT = random.randint(1, 13)
-    data_list += medicine(medicineCNT, medicinePath, dbPath)
+    for i in tqdm(range(nums)):
+        # 처방전 데이터 생성
+        data_list = []
+        medicineCNT = random.randint(1, 13)
+        data_list += medicine(medicineCNT, medicinePath, dbPath)
 
-    injectionCNT = random.randint(1, 7)
-    data_list += injection(injectionCNT, medicinePath, dbPath)
-    
-    instructionCNT = random.randint(1, 7)
-    data_list += instruction(instructionCNT, medicinePath, dbPath)
+        injectionCNT = random.randint(1, 7)
+        data_list += injection(injectionCNT, medicinePath, dbPath)
+        
+        instructionCNT = random.randint(1, 7)
+        data_list += instruction(instructionCNT, medicinePath, dbPath)
 
-    data_list += checkSquared(dbPath)
+        data_list += checkSquared(dbPath)
 
-    # 처방전 이미지 및 Json 생성
-    img, img_json  = createImg(data_list, imgPath, moveTxt, txtFont, txtSize)
+        # 처방전 이미지 및 Json 생성
+        result_img, result_json  = createImg(data_list, labelingPath, imgPath, moveTxt, txtFont, txtSize, debug)
+
+        if debug:
+            cv2.namedWindow("result", cv2.WINDOW_NORMAL)
+            cv2.imshow('result', result_img)
+            cv2.waitKey()
+            cv2.destroyAllWindows()
+        
+        with open(saveJsonPath + rf'\{i}.json', 'w', encoding='utf-8') as file:
+            file.write(result_json)
+            if debug:
+                print(result_json)
+        
+        cv2.imwrite(saveIMGPaht + rf'\{i}.jpg', result_img)
+
 
 
 # 의약품 메서드
@@ -193,13 +220,15 @@ def checkSquared(positionPath):
     return checkSquared_list
 
 
-def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 15):
+def createImg(data, labelingPath, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 15, debug=False):
     """
     처방전 data를 이미지로 제작
 
     Args:
     ---
         `data [string]` : text위치 및 내용
+
+        `labelingPath [string]` : prescript_labeling.csv 경로
 
         `imgPath [string]` : 처방전 양식 경로
 
@@ -209,11 +238,13 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
 
         `txtSize [int]` : 글자 크기
 
+        `debug [bool]` : 디버그용(라인 표시)
+
     Returns:
     ---
         `result_img [img]` : 글자가 삽입된 처방전 이미지.
 
-        `result_txt [json]` : 이미지에 있는 글자 위치 및 내용이 담긴 Json 파일
+        `result_json [json]` : 이미지에 있는 글자 위치 및 내용이 담긴 Json 파일
 
     """
 
@@ -233,7 +264,9 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
     # 텍스트를 추가하는 for loop    
     for text, position in data:
         # .text(위치, 텍스트, 텍스트 색, 폰트)
-        text_width, text_height = draw.textsize(text, font=font)
+        text_width, text_height = draw.textbbox((0, 0), text, font=font)[2:4]
+
+        
 
         position[0] += moveTxt[0] + 10
         position[1] += moveTxt[1]
@@ -244,7 +277,7 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
         # Calculate the y position to center the text
         draw.text((x, y), text, (0, 0, 0), font=font,anchor='mm')
         
-        text_sizes_list.append([position[0], position[1], position[0] + text_width, position[1] + text_height])
+        text_sizes_list.append([position[0], position[1], position[0] + text_width, position[1] + text_height, text])
         
 
     # PIL Image를 다시 numpy 배열로 변환
@@ -252,21 +285,46 @@ def createImg(data, imgPath, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 
     result_img = cv2.cvtColor(img_with_text, cv2.COLOR_RGB2BGR)
     
     #사각형 그리기
-    for x1, y1, x2, y2 in text_sizes_list:
-        cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-
-
-    cv2.imshow('result', result_img)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
-    return result_img
+    if debug:
+        for x1, y1, x2, y2, txt in text_sizes_list:
+            cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 1)
 
 
 
+    # 처방전 라벨링 사각형 그리기
 
+    df = pd.read_json(labelingPath)
+
+    # 'id', 'x1', 'y1', 'y2' 컬럼의 값을 이용해서 텍스트와 좌표값을 가진 딕셔너리 생성
+    position_list = [[row['id'], row['x1'] + moveTxt[0], row['y1'] + moveTxt[1] ,row['x2'] + moveTxt[0] , row['y2'] + moveTxt[1], row['cont']] for _, row in df.iterrows()]
+
+    
+    #사각형 그리기
+    if debug:
+        for id, x1, y1, x2, y2, txt in position_list:
+            cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 1)
+            text_sizes_list.append([x1, y1, x2, y2,txt])
+
+    # Json 파일 만들기
+    text_sizes_dics = []
+    for x1, y1, x2, y2, txt in text_sizes_list:
+        text_sizes_dics.append({'x1' : int(x1), 'y1' : int(y1), 'x2' : int(x2), 'y2' : int(y2), 'txt' : str(txt)})
+        
+
+    result_json = json.dumps(text_sizes_dics, ensure_ascii=False , indent=4)
+
+
+    return result_img, result_json
+
+
+
+nums = 10
+saveIMGPaht = r'1.data\4.dataSet\img'
+saveJsonPath = r'1.data\4.dataSet\json'
 dbPath = r'1.data\3.DB\db.csv'
 medicinePath = r'1.data\3.DB\medicine_list.csv'
+labelingPath = r'1.data\3.DB\prescript_labeling(Fix).json'
 imgPath = r'1.data\1.img\prescription.png'
+debug = False
 
-
-CreateDataset(dbPath = dbPath, medicinePath= medicinePath, imgPath = imgPath)
+CreateDataset(nums=nums, saveIMGPaht = saveIMGPaht, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath= medicinePath, labelingPath = labelingPath, imgPath = imgPath, debug = debug)

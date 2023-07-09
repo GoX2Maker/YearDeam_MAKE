@@ -38,44 +38,22 @@ def input_labeling(csvPath, imgPath, moveTxt, txtFont = "malgun.ttf", txtSize = 
 
 
     imgBGR = cv2.imread(imgPath)
-    imgRGB = cv2.cvtColor(imgBGR, cv2.COLOR_BGR2RGB)
-
-    font = ImageFont.truetype(txtFont, txtSize)
-
-    # 이미지를 PIL Image 객체로 변환
-    img = Image.fromarray(imgRGB)
-
-    # Draw 객체 생성
-    draw = ImageDraw.Draw(img)
 
     # csv 파일 로드
     df = pd.read_csv(csvPath)
 
     # 'id', 'x1', 'y1', 'y2' 컬럼의 값을 이용해서 텍스트와 좌표값을 가진 딕셔너리 생성
-    text_dict = {str(row['id']): (row['x1'] + moveTxt[0], row['y1'] + moveTxt[1]) for _, row in df.iterrows()}
+    position_list = [[row['id'], row['x1'] + moveTxt[0], row['y1'] + moveTxt[1] ,row['x2'] + moveTxt[0] , row['y2'] + moveTxt[1]] for _, row in df.iterrows()]
 
-    text_sizes_list = []
-    # 텍스트를 추가하는 for loop    
-    for text, position in text_dict.items():
-        # .text(위치, 텍스트, 텍스트 색, 폰트)
-        
-        text_width, text_height = draw.textsize(text, font=font)
-        
-        # Calculate the y position to center the text
-        draw.text((position[0] + text_width /2, position[1]  + text_height/2), text, (0, 0, 0), font=font,anchor='mm')
-        
-        text_sizes_list.append([position[0], position[1], position[0] + text_width, position[1] + text_height])
-        
-
-    # PIL Image를 다시 numpy 배열로 변환
-    img_with_text = np.array(img)
-    result_img = cv2.cvtColor(img_with_text, cv2.COLOR_RGB2BGR)
+   
+   
     
     #사각형 그리기
-    for x1, y1, x2, y2 in text_sizes_list:
-        cv2.rectangle(result_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    for id, x1, y1, x2, y2 in position_list:
+        cv2.rectangle(imgBGR, (x1, y1), (x2, y2), (0, 255, 0), 1)
+        
 
-    return text_dict, result_img
+    return imgBGR
 
 
 csvPath = r'1.data\3.DB\prescript_labeling.csv'
@@ -84,8 +62,9 @@ moveTxt = [0, 0]
 # txtFont = "malgun.ttf"
 # txtSize = 15
 
-text_dict, result_img = input_labeling(csvPath, imgPath, moveTxt)
-print(text_dict)
+result_img = input_labeling(csvPath, imgPath, moveTxt)
+
+cv2.namedWindow("result", cv2.WINDOW_NORMAL)
 cv2.imshow('result', result_img)
 cv2.waitKey()
 cv2.destroyAllWindows()
