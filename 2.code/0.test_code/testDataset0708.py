@@ -42,7 +42,7 @@ def CreateDataset(dbPath, medicinePath, imgPath, moveTxt = [0,0], txtFont = "gul
 
     data_list += checkSquared(dbPath)
 
-    data_list += num_0_to_4(dbPath)
+    #data_list += num_0_to_4(dbPath)
 
     # 처방전 이미지 및 Json 생성
     img, img_json  = createImg(data_list, imgPath, moveTxt, txtFont, txtSize)
