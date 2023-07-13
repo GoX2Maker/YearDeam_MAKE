@@ -1,3 +1,4 @@
+ # -*- coding: utf-8 -*-
 import random
 import cv2
 import pandas as pd
@@ -8,8 +9,8 @@ from tqdm.auto import tqdm
 import time
 
 class DataSet():
-    def __init__(self, saveIMGPaht, saveJsonPath, dbPath, medicinePath, labelingPath, imgPath):
-        self.saveIMGPaht = saveIMGPaht
+    def __init__(self, saveIMGPath, saveJsonPath, dbPath, medicinePath, labelingPath, imgPath):
+        self.saveIMGPath = saveIMGPath
         self.saveJsonPath = saveJsonPath
         self.medicine_df = pd.read_csv(medicinePath)
         self.position_df = pd.read_csv(dbPath)
@@ -53,7 +54,7 @@ class DataSet():
                 if debug:
                     print(result_json)
             
-            cv2.imwrite(self.saveIMGPaht + rf'\{i}.jpg', result_img)
+            cv2.imwrite(self.saveIMGPath + rf'\{i}.jpg', result_img)
 
         et = time.time()
         elapsed_time = et - st
@@ -115,8 +116,13 @@ class DataSet():
         data_list.append(self.crateIDdata(id = 9, valueType=3))
         data_list.append(self.crateIDdata(id = 10, valueType=4))
 
-        for i in range(11,21):  
-            data_list.append(self.kcd(i))
+        # id 11 ~ 21
+        # for i in range(11,21):  
+        #     data_list.append(self.kcd(i))
+        data_list += self.kcd_generator(11)
+        temp_ = random.randint(0,2)
+        if temp_ ==1 :
+            data_list += self.kcd_generator(16)
 
         # id 22~23, 114~115, 118~120
         data_list.append(self.crateIDdata(id = 22, valueType=5))
@@ -299,20 +305,41 @@ class DataSet():
 
         return [str(val), position]
     
-    def kcd(self,id):
-        string='abcdefghijklmnopqrstuvwxyz'
-        string_list=list(string.upper())
-        kcd_list=string_list.copy()
-        
-        random.shuffle(kcd_list)
-        
-        kcd_num=str(random.randint(0,9))
+    def kcd_generator(self,id = 11):
+        alphabet_list=['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+        alphabet_idx=random.randint(0,len(alphabet_list)-1)
+        alphabet=alphabet_list[alphabet_idx]        
 
-         # id에 해당하는 위치
+        kcd_list=[]
         mask = self.position_df['id'] == id
         position = self.position_df[mask][['x1', 'y1']].values[0]
+        kcd_list.append([alphabet,position])
 
-        return [kcd_list[0]+kcd_num,position]
+        num=random.randint(1,4)
+        for n in range(num):
+            id += 1
+            number=random.randint(1,9)     
+            mask = self.position_df['id'] == id
+            position = self.position_df[mask][['x1', 'y1']].values[0]
+            kcd_list.append([str(number),position])            
+
+        return kcd_list
+
+    
+    # def kcd(self,id):
+    #     string='abcdefghijklmnopqrstuvwxyz'
+    #     string_list=list(string.upper())
+    #     kcd_list=string_list.copy()
+        
+    #     random.shuffle(kcd_list)
+        
+    #     kcd_num=str(random.randint(0,9))
+
+    #      # id에 해당하는 위치
+    #     mask = self.position_df['id'] == id
+    #     position = self.position_df[mask][['x1', 'y1']].values[0]
+
+    #     return [kcd_list[0]+kcd_num,position]
     
 
     def createImg(self, data, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 15, debug=False):
@@ -382,17 +409,18 @@ class DataSet():
 
 
 
-saveIMGPaht = r'1.data\4.dataSet\img'
+saveIMGPath = r'1.data\4.dataSet\img'
 saveJsonPath = r'1.data\4.dataSet\json'
+
 dbPath = r'1.data\3.DB\db.csv'
 medicinePath = r'1.data\3.DB\medicine_list.csv'
 labelingPath = r'1.data\3.DB\prescript_labeling(Fix).json'
 imgPath = r'1.data\1.img\prescription.png'
 
-dataset =  DataSet(saveIMGPaht= saveIMGPaht, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
+dataset =  DataSet(saveIMGPath= saveIMGPath, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
 
-nums = 20
-debug = False#True
+nums = 10
+debug = False
 dataset.CreateDataset(nums=nums, debug=debug)
 
 
