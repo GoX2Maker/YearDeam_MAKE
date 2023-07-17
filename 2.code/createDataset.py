@@ -7,6 +7,9 @@ import numpy as np
 import json
 from tqdm.auto import tqdm
 import time
+import os
+import shutil
+import re
 
 class DataSet():
     def __init__(self, saveIMGPath, saveJsonPath, dbPath, medicinePath, labelingPath, imgPath):
@@ -172,6 +175,7 @@ class DataSet():
             index = random.randint(0, 40000) 
             namesize = random.randint(4, 20)
             medi_name = self.medicine_df.iloc[index, 2][:namesize]
+            medi_name = re.sub("\n", "", medi_name)
 
             amount = random.randint(1, 10) # 1회 투약량
             count = random.randint(1, 10) # 1회 투약횟수
@@ -223,6 +227,7 @@ class DataSet():
             index = random.randint(0, 40000)
             namesize = random.randint(4, 15)
             val = self.medicine_df.iloc[index, 2][:namesize]
+            val = re.sub('\n','',val)
         elif valueType == 2:
             # 날짜생성
             year_full=str(random.randint(1950,2023))
@@ -408,9 +413,25 @@ class DataSet():
 
 
 
-
+def makePath(saveIMGPath, saveJsonPath):
+       
+    if not os.path.isdir(saveIMGPath):
+        os.mkdir(saveIMGPath)
+    else:
+        shutil.rmtree(saveIMGPath)
+        os.mkdir(saveIMGPath)
+        
+    if not os.path.isdir(saveJsonPath):
+        os.mkdir(saveJsonPath)
+    else:
+        shutil.rmtree(saveJsonPath)
+        os.mkdir(saveJsonPath)
+        
 saveIMGPath = r'1.data\4.dataSet\img'
 saveJsonPath = r'1.data\4.dataSet\json'
+
+
+makePath(saveIMGPath, saveJsonPath)
 
 dbPath = r'1.data\3.DB\db.csv'
 medicinePath = r'1.data\3.DB\medicine_list.csv'
