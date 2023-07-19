@@ -10,11 +10,15 @@ import time
 import os
 import shutil
 import re
+import glob
+from natsort import natsorted
 
 class DataSet():
-    def __init__(self, saveIMGPath, saveJsonPath, dbPath, medicinePath, labelingPath, imgPath):
+    def __init__(self, saveIMGPath, saveJsonPath,savepathConvertIMG_Resnet, savepathConvertLBL_Resnet,dbPath, medicinePath, labelingPath, imgPath):
         self.saveIMGPath = saveIMGPath
         self.saveJsonPath = saveJsonPath
+        self.savepathConvertIMG_Resnet = savepathConvertIMG_Resnet
+        self.savepathConvertLBL_Resnet = savepathConvertLBL_Resnet
         self.medicine_df = pd.read_csv(medicinePath)
         self.position_df = pd.read_csv(dbPath)
         self.labeling_df = pd.read_json(labelingPath)
@@ -141,10 +145,6 @@ class DataSet():
         return data_list
 
 
-
-
-
-    
     def createMedicineOrInjection(self, type):
         """
         의약품 또는 주사 데이터를 만든다.
@@ -410,38 +410,80 @@ class DataSet():
 
         return result_img, result_json
 
-
-
-
-def makePath(saveIMGPath, saveJsonPath):
-       
-    if not os.path.isdir(saveIMGPath):
-        os.mkdir(saveIMGPath)
-    else:
-        shutil.rmtree(saveIMGPath)
-        os.mkdir(saveIMGPath)
+    def convertDataSetForResnet(self):
+        print('\nconvertDataSetForResnet')
+        st = time.time()
+        dataSetIMG_list = glob.glob(fr"{self.saveIMGPath}\*.jpg")
+        dataSetJson_list = glob.glob(fr"{self.saveJsonPath}\*.json")
         
-    if not os.path.isdir(saveJsonPath):
-        os.mkdir(saveJsonPath)
+        dataSetIMG_list = natsorted(dataSetIMG_list)
+        dataSetJson_list = natsorted(dataSetJson_list)
+        
+        txt_content = ""
+        for imgPath, jsonPath in tqdm(zip(dataSetIMG_list, dataSetJson_list),total=len(dataSetIMG_list)):
+            # 이미지 자르기(각 이미지별로 Json을 읽어서 글자별로 자르기)
+            ## 이미지 읽기
+            img = cv2.imread(imgPath)
+            imgname = os.path.splitext(os.path.basename(imgPath))[0]
+            
+            
+            #Json 읽기
+            json = pd.read_json(jsonPath)
+            cnt = 0
+            
+            
+            for _, row in json.iterrows():
+                x1 = row['x1']
+                x2 = row['x2']
+                y1 = row['y1']
+                y2 = row['y2']
+                content = row['txt']
+                imgPath_ = f'{self.savepathConvertIMG_Resnet}\{imgname}_{cnt}.jpg'
+                cv2.imwrite(imgPath_, img[y1:y2, x1:x2])
+                
+                txt_content += f'{imgPath_}\t{content}\n'
+                cnt+=1
+                        
+                        
+        with open(f'{self.savepathConvertLBL_Resnet}\lable.txt', 'w', encoding='utf-8') as f:
+                f.write(txt_content)
+        
+        et = time.time()
+        elapsed_time = et - st
+        print(f'Execution time: {elapsed_time:.4f} seconds')
+
+
+
+def makePath(path):
+       
+    if not os.path.isdir(path):
+        os.mkdir(path)
     else:
-        shutil.rmtree(saveJsonPath)
-        os.mkdir(saveJsonPath)
+        shutil.rmtree(path)
+        os.mkdir(path)
+        
+
         
 saveIMGPath = r'1.data\4.dataSet\img'
 saveJsonPath = r'1.data\4.dataSet\json'
+savepathConvertIMG_Resnet = r'1.data\4.dataSet\Resnet\img'
+savepathConvertLBL_Resnet = r'1.data\4.dataSet\Resnet\label'  
 
-
-makePath(saveIMGPath, saveJsonPath)
+makePath(saveIMGPath)
+makePath(saveJsonPath)
+makePath(savepathConvertIMG_Resnet)
+makePath(savepathConvertLBL_Resnet)
 
 dbPath = r'1.data\3.DB\db.csv'
 medicinePath = r'1.data\3.DB\medicine_list.csv'
 labelingPath = r'1.data\3.DB\prescript_labeling(Fix).json'
 imgPath = r'1.data\1.img\prescription.png'
 
-dataset =  DataSet(saveIMGPath= saveIMGPath, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
+dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
 
-nums = 10
+nums = 100
 debug = False
 dataset.CreateDataset(nums=nums, debug=debug)
+dataset.convertDataSetForResnet()
 
 
