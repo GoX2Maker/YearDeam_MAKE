@@ -463,16 +463,12 @@ def makePath(path):
         os.mkdir(path)
         
 
-createPath = r'1.data\4.dataSet'   
+        
 saveIMGPath = r'1.data\4.dataSet\img'
 saveJsonPath = r'1.data\4.dataSet\json'
-
-createResnetPath = r'1.data\4.dataSet\Resnet'   
 savepathConvertIMG_Resnet = r'1.data\4.dataSet\Resnet\img'
 savepathConvertLBL_Resnet = r'1.data\4.dataSet\Resnet\label'  
 
-makePath(createPath)
-makePath(createResnetPath)
 makePath(saveIMGPath)
 makePath(saveJsonPath)
 makePath(savepathConvertIMG_Resnet)
