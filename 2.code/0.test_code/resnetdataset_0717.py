@@ -33,7 +33,7 @@ def test(dataSetIMG, dataSetJson, save_IMGPath, save_LBLPath):
     dataSetJson_list = natsorted(dataSetJson_list)
     
     txt_content = ""
-    for imgPath, jsonPath in tqdm(zip(dataSetIMG_list, dataSetJson_list)):
+    for imgPath, jsonPath in tqdm(zip(dataSetIMG_list, dataSetJson_list),total=len(dataSetIMG_list)):
         # 이미지 자르기(각 이미지별로 Json을 읽어서 글자별로 자르기)
         ## 이미지 읽기
         img = cv2.imread(imgPath)
