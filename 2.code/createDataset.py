@@ -176,6 +176,7 @@ class DataSet():
             namesize = random.randint(4, 20)
             medi_name = self.medicine_df.iloc[index, 2][:namesize]
             medi_name = re.sub("\n", "", medi_name)
+            medi_name = re.sub("\r", "", medi_name)
 
             amount = random.randint(1, 10) # 1회 투약량
             count = random.randint(1, 10) # 1회 투약횟수
@@ -228,6 +229,7 @@ class DataSet():
             namesize = random.randint(4, 15)
             val = self.medicine_df.iloc[index, 2][:namesize]
             val = re.sub('\n','',val)
+            val = re.sub('\r','',val)
         elif valueType == 2:
             # 날짜생성
             year_full=str(random.randint(1950,2023))
@@ -441,7 +443,7 @@ class DataSet():
                 imgPath_ = f'{self.savepathConvertIMG_Resnet}\{imgname}_{cnt}.jpg'
                 cv2.imwrite(imgPath_, img[y1:y2, x1:x2])
                 
-                txt_content += f'{imgPath_}\t{content}\n'
+                txt_content += f'{imgname}_{cnt}.jpg\t{content}\n'
                 cnt+=1
                         
                         
