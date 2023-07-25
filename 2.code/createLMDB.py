@@ -25,7 +25,7 @@ def writeCache(env, cache):
             txn.put(k, v)
 
 
-def createDataset(inputPath, gtFile, outputPath, checkValid=True):
+def createDataset(inputPath, gtFile, outputPath, map_size=1e7, checkValid=True):
     """
     Create LMDB dataset for training and evaluation.
     ARGS:
@@ -35,7 +35,7 @@ def createDataset(inputPath, gtFile, outputPath, checkValid=True):
         checkValid : if true, check the validity of every image
     """
     os.makedirs(outputPath, exist_ok=True)
-    env = lmdb.open(outputPath, map_size=1e7)
+    env = lmdb.open(outputPath, map_size=map_size)
     cache = {}
     cnt = 1
 
@@ -89,4 +89,5 @@ def createDataset(inputPath, gtFile, outputPath, checkValid=True):
 inputPath = r'1.data\4.dataSet\Resnet\img'
 gtFile = r'1.data\4.dataSet\Resnet\label\lable.txt'
 outputPath = r'1.data\4.dataSet\Resnet\result'
-createDataset(inputPath, gtFile, outputPath)
+map_size=1e8
+createDataset(inputPath, gtFile, outputPath,map_size = map_size)
