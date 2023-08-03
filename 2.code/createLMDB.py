@@ -25,7 +25,7 @@ def writeCache(env, cache):
             txn.put(k, v)
 
 
-def createDataset(inputPath, gtFile, outputPath, map_size=1e7, checkValid=True):
+def createDataset(inputPath, gtFile, outputPath, map_size=int(1e7), checkValid=True):
     """
     Create LMDB dataset for training and evaluation.
     ARGS:
@@ -88,6 +88,21 @@ def createDataset(inputPath, gtFile, outputPath, map_size=1e7, checkValid=True):
 
 inputPath = r'1.data\4.dataSet\Resnet\img'
 gtFile = r'1.data\4.dataSet\Resnet\label\lable.txt'
-outputPath = r'1.data\4.dataSet\Resnet\result'
-map_size=1e8
+outputPath = r'1.data\4.dataSet\Resnet\LMDB\train\MJ'
+map_size=int(1e8)
+createDataset(inputPath, gtFile, outputPath,map_size = map_size)
+
+inputPath = r'1.data\4.dataSet\Resnet\img2'
+gtFile = r'1.data\4.dataSet\Resnet\label2\lable.txt'
+outputPath = r'1.data\4.dataSet\Resnet\LMDB\train\ST'
+createDataset(inputPath, gtFile, outputPath,map_size = map_size)
+
+inputPath = r'1.data\4.dataSet\Resnet\img3'
+gtFile = r'1.data\4.dataSet\Resnet\label3\lable.txt'
+outputPath = r'1.data\4.dataSet\Resnet\LMDB\test\MJ'
+createDataset(inputPath, gtFile, outputPath,map_size = map_size)
+
+inputPath = r'1.data\4.dataSet\Resnet\img4'
+gtFile = r'1.data\4.dataSet\Resnet\label4\lable.txt'
+outputPath = r'1.data\4.dataSet\Resnet\LMDB\test\ST'
 createDataset(inputPath, gtFile, outputPath,map_size = map_size)
