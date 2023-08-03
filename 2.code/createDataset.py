@@ -23,6 +23,7 @@ class DataSet():
         self.position_df = pd.read_csv(dbPath)
         self.labeling_df = pd.read_json(labelingPath)
         self.prescription_img = cv2.imread(imgPath)
+        
 
     def CreateDataset(self, nums, moveTxt = [0,0], txtFont = "malgun.ttf", txtSize = 10, debug = False):
         """
@@ -465,6 +466,14 @@ def makePath(path):
         os.mkdir(path)
         
 
+
+
+dbPath = r'1.data\3.DB\db.csv'
+medicinePath = r'1.data\3.DB\medicine_list.csv'
+labelingPath = r'1.data\3.DB\prescript_labeling(Fix).json'
+imgPath = r'1.data\1.img\prescription.png'
+
+
         
 saveIMGPath = r'1.data\4.dataSet\img'
 saveJsonPath = r'1.data\4.dataSet\json'
@@ -476,10 +485,7 @@ makePath(saveJsonPath)
 makePath(savepathConvertIMG_Resnet)
 makePath(savepathConvertLBL_Resnet)
 
-dbPath = r'1.data\3.DB\db.csv'
-medicinePath = r'1.data\3.DB\medicine_list.csv'
-labelingPath = r'1.data\3.DB\prescript_labeling(Fix).json'
-imgPath = r'1.data\1.img\prescription.png'
+
 
 dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
 
@@ -489,3 +495,59 @@ dataset.CreateDataset(nums=nums, debug=debug)
 dataset.convertDataSetForResnet()
 
 
+saveIMGPath = r'1.data\4.dataSet\img2'
+saveJsonPath = r'1.data\4.dataSet\json2'
+savepathConvertIMG_Resnet = r'1.data\4.dataSet\Resnet\img2'
+savepathConvertLBL_Resnet = r'1.data\4.dataSet\Resnet\label2'  
+
+makePath(saveIMGPath)
+makePath(saveJsonPath)
+makePath(savepathConvertIMG_Resnet)
+makePath(savepathConvertLBL_Resnet)
+
+
+
+dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
+
+nums = 100
+debug = False
+dataset.CreateDataset(nums=nums, debug=debug)
+dataset.convertDataSetForResnet()
+
+saveIMGPath = r'1.data\4.dataSet\img3'
+saveJsonPath = r'1.data\4.dataSet\json3'
+savepathConvertIMG_Resnet = r'1.data\4.dataSet\Resnet\img3'
+savepathConvertLBL_Resnet = r'1.data\4.dataSet\Resnet\label3'  
+
+makePath(saveIMGPath)
+makePath(saveJsonPath)
+makePath(savepathConvertIMG_Resnet)
+makePath(savepathConvertLBL_Resnet)
+
+
+
+dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
+
+nums = 100
+debug = False
+dataset.CreateDataset(nums=nums, debug=debug)
+dataset.convertDataSetForResnet()
+
+saveIMGPath = r'1.data\4.dataSet\img4'
+saveJsonPath = r'1.data\4.dataSet\json4'
+savepathConvertIMG_Resnet = r'1.data\4.dataSet\Resnet\img4'
+savepathConvertLBL_Resnet = r'1.data\4.dataSet\Resnet\label4'  
+
+makePath(saveIMGPath)
+makePath(saveJsonPath)
+makePath(savepathConvertIMG_Resnet)
+makePath(savepathConvertLBL_Resnet)
+
+
+
+dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
+
+nums = 100
+debug = False
+dataset.CreateDataset(nums=nums, debug=debug)
+dataset.convertDataSetForResnet()

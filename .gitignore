@@ -225,8 +225,8 @@ tags
 .ionide
 
 #ignore data Path
-/1.data/4.dataSet/img/*.jpg
-/1.data/4.dataSet/json/*.json
-/1.data/4.dataSet/Resnet
+/1.data/4.dataSet
+/saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/*.pth
+
 
 # End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,visualstudiocode,vim
