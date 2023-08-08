@@ -215,7 +215,7 @@ class DataSet():
 
         Returns:
         ---
-        
+                
         data list
 
         """
@@ -406,7 +406,9 @@ class DataSet():
         text_sizes_dics = []
         for x1, y1, x2, y2, txt in text_sizes_list:
             text_sizes_dics.append({'x1' : int(x1), 'y1' : int(y1), 'x2' : int(x2), 'y2' : int(y2), 'txt' : str(txt)})
-            
+        
+        for index, row in self.labeling_df.iterrows():
+            text_sizes_dics.append({'x1' : int(row['x1']), 'y1' : int(row['y1']), 'x2' : int(row['x2']), 'y2' : int(row['y2']), 'txt' : str(row['cont'])})
 
         result_json = json.dumps(text_sizes_dics, ensure_ascii=False , indent=4)
 
