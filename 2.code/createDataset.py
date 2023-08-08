@@ -47,9 +47,18 @@ class DataSet():
 
         """
         st = time.time()
+        
+        print()
+        print('Create data')
         for i in tqdm(range(nums)):
             data_list = self.createData()
-            result_img, result_json  = self.createImg(data_list, moveTxt, txtFont, txtSize, debug)
+            
+            if moveTxt[0] ==0 and moveTxt[1] == 0:
+                result_img, result_json  = self.createImg(data_list, moveTxt, txtFont, txtSize, debug)
+            else:
+                move_x = random.randint(-moveTxt[0],moveTxt[0])
+                move_y = random.randint(-moveTxt[1],moveTxt[1])
+                result_img, result_json  = self.createImg(data_list, [move_x, move_y], txtFont, txtSize, debug)
 
             if debug:
                 cv2.namedWindow("result", cv2.WINDOW_NORMAL)
@@ -462,10 +471,10 @@ class DataSet():
 def makePath(path):
        
     if not os.path.isdir(path):
-        os.mkdir(path)
+        os.makedirs(path, exist_ok=True)
     else:
         shutil.rmtree(path)
-        os.mkdir(path)
+        os.makedirs(path, exist_ok=True)
         
 
 
@@ -491,9 +500,10 @@ makePath(savepathConvertLBL_Resnet)
 
 dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
 
-nums = 100
+nums = 10000
 debug = False
-dataset.CreateDataset(nums=nums, debug=debug)
+moveTxt = [10, 8]
+dataset.CreateDataset(nums=nums, moveTxt = moveTxt, debug=debug)
 dataset.convertDataSetForResnet()
 
 
@@ -511,9 +521,10 @@ makePath(savepathConvertLBL_Resnet)
 
 dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
 
-nums = 100
+nums = 10000
 debug = False
-dataset.CreateDataset(nums=nums, debug=debug)
+moveTxt = [10, 8]
+dataset.CreateDataset(nums=nums, moveTxt = moveTxt, debug=debug)
 dataset.convertDataSetForResnet()
 
 saveIMGPath = r'1.data\4.dataSet\img3'
@@ -530,9 +541,10 @@ makePath(savepathConvertLBL_Resnet)
 
 dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
 
-nums = 100
+nums = 10000
 debug = False
-dataset.CreateDataset(nums=nums, debug=debug)
+moveTxt = [10, 8]
+dataset.CreateDataset(nums=nums, moveTxt = moveTxt, debug=debug)
 dataset.convertDataSetForResnet()
 
 saveIMGPath = r'1.data\4.dataSet\img4'
@@ -549,7 +561,8 @@ makePath(savepathConvertLBL_Resnet)
 
 dataset =  DataSet(saveIMGPath= saveIMGPath,savepathConvertIMG_Resnet= savepathConvertIMG_Resnet,savepathConvertLBL_Resnet = savepathConvertLBL_Resnet, saveJsonPath = saveJsonPath, dbPath = dbPath, medicinePath = medicinePath, labelingPath = labelingPath, imgPath=imgPath)
 
-nums = 100
+nums = 10000
 debug = False
-dataset.CreateDataset(nums=nums, debug=debug)
+moveTxt = [10, 8]
+dataset.CreateDataset(nums=nums, moveTxt = moveTxt, debug=debug)
 dataset.convertDataSetForResnet()
