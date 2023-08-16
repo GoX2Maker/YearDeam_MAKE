@@ -89,7 +89,7 @@ def createDataset(inputPath, gtFile, outputPath, map_size=int(1e7), checkValid=T
 inputPath = r'1.data\4.dataSet\Resnet\img'
 gtFile = r'1.data\4.dataSet\Resnet\label\lable.txt'
 outputPath = r'1.data\4.dataSet\Resnet\LMDB\train\MJ'
-map_size=int(1e8)
+map_size=int(6e9)
 createDataset(inputPath, gtFile, outputPath,map_size = map_size)
 
 inputPath = r'1.data\4.dataSet\Resnet\img2'
